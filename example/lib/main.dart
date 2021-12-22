@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:virtual.keyboard.dart/virtual.keyboard.dart';
+import 'package:vk/vk.dart';
 
 void main() => runApp(MyApp());
 

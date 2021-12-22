@@ -10,7 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
 
-  virtual.keyboard.dart:
+  vk:
     path: ../
 
   cupertino_icons: ^1.0.2

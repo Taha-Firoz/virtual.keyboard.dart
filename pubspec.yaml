@@ -1,7 +1,7 @@
-name: virtual.keyboard.dart
+name: vk
 description: Redesigned virtual keyboard for dart + flutter, forked from virtual keyboard
 version: 0.2.0
-homepage: https://github.com/Taha-Firoz/virtual_keyboard
+homepage: https://github.com/Taha-Firoz/virtual.keyboard.dart
 
 environment:
   sdk: ">=2.12.0 <3.0.0"
