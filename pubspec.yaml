@@ -1,0 +1,18 @@
+name: virtual.keyboard.dart
+description: Redesigned virtual keyboard for dart + flutter, forked from virtual keyboard
+version: 0.2.0
+homepage: https://github.com/Taha-Firoz/virtual_keyboard
+
+environment:
+  sdk: ">=2.12.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
