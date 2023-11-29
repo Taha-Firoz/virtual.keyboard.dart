@@ -233,7 +233,7 @@ class _VirtualKeyboardState extends State<VirtualKeyboard> {
   Widget _keyboardDefaultKey(VirtualKeyboardKey key) {
     return Material(
         color: widget.keyBackgroundColor,
-        clipBehavior: Clip.hardEdge
+        clipBehavior: Clip.hardEdge,
         borderRadius: widget.keyBorderRadius,
         child: InkWell(
           highlightColor: widget.keyHighlightColor,
@@ -361,12 +361,12 @@ class _VirtualKeyboardState extends State<VirtualKeyboard> {
         break;
     }
     var finalKey = Material(
-      color: keyBackgroundColor,
+      color: widget.keyBackgroundColor,
       clipBehavior: Clip.hardEdge,
-      borderRadius: keyBorderRadius,
+      borderRadius: widget.keyBorderRadius,
       child: InkWell(
-        borderRadius: keyBorderRadius,
-        highlightColor: keyHighlightColor,
+        borderRadius: widget.keyBorderRadius,
+        highlightColor: widget.keyHighlightColor,
         onTap: () {
           if (key.action == VirtualKeyboardKeyAction.Shift) {
             if (!alwaysCaps) {
