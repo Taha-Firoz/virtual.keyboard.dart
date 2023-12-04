@@ -1,3 +1,7 @@
+## [0.2.2] - 12/04/2023.
+
+* Added keyBackgroundColor, keyHighlightColor and keyBorderRadius parameters
+
 ## [0.2.0] - 12/23/2021.
 
 * Fixed major issues with original virtual keyboard
