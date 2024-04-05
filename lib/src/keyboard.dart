@@ -55,7 +55,6 @@ class VirtualKeyboard extends StatefulWidget {
 
 /// Holds the state for Virtual Keyboard class.
 class _VirtualKeyboardState extends State<VirtualKeyboard> {
-  TextSelection? textSelection;
   late double keyHeight;
   late double keySpacing;
   late double maxRowWidth;
@@ -65,6 +64,8 @@ class _VirtualKeyboardState extends State<VirtualKeyboard> {
   Widget Function(BuildContext context, VirtualKeyboardKey key)? builder;
   late double height;
   late double width;
+  TextSelection? cursorPosition;
+  late TextEditingController textController;
   late Color textColor;
   late double fontSize;
   late bool alwaysCaps;
@@ -93,26 +94,26 @@ class _VirtualKeyboardState extends State<VirtualKeyboard> {
   }
 
   void textControllerEvent() {
-    final textController = widget.textController;
-
     if (textController.selection.toString() != "TextSelection.invalid") {
-      textSelection = textController.selection;
+      cursorPosition = textController.selection;
     } else {
-      textSelection = TextSelection(baseOffset: 0, extentOffset: 0);
+      if (cursorPosition == null) {
+        cursorPosition = TextSelection(baseOffset: 0, extentOffset: 0);
+      } else {}
     }
-    setState(() {});
   }
 
   @override
   void initState() {
     super.initState();
+    textController = widget.textController;
     type = widget.type;
     height = widget.height;
     textColor = widget.textColor;
     fontSize = widget.fontSize;
     alwaysCaps = widget.alwaysCaps;
 
-    widget.textController.addListener(textControllerEvent);
+    textController.addListener(textControllerEvent);
 
     // Init the Text Style for keys.
     textStyle = TextStyle(
@@ -150,7 +151,8 @@ class _VirtualKeyboardState extends State<VirtualKeyboard> {
         maxLengthRow = layoutRow.length;
       }
     }
-    maxRowWidth = ((maxLengthRow - 1) * keySpacing) + (maxLengthRow * keyHeight);
+    maxRowWidth =
+        ((maxLengthRow - 1) * keySpacing) + (maxLengthRow * keyHeight);
 
     return Container(
       height: height,
@@ -244,7 +246,9 @@ class _VirtualKeyboardState extends State<VirtualKeyboard> {
             height: keyHeight,
             child: Center(
                 child: Text(
-              alwaysCaps ? key.capsText! : (isShiftEnabled ? key.capsText! : key.text!),
+              alwaysCaps
+                  ? key.capsText!
+                  : (isShiftEnabled ? key.capsText! : key.text!),
               style: textStyle,
             )),
           ),
@@ -252,31 +256,30 @@ class _VirtualKeyboardState extends State<VirtualKeyboard> {
   }
 
   void _onKeyPress(VirtualKeyboardKey key) {
-    final textController = widget.textController;
     if (key.keyType == VirtualKeyboardKeyType.String) {
-      final text = textController.text;
-      print('_onKeyPress: Text $text');
-      if (textSelection == null) textControllerEvent();
-      textController.text = textSelection!.textBefore(text) +
+      String text = textController.text;
+      if (cursorPosition == null) textControllerEvent();
+      textController.text = cursorPosition!.textBefore(text) +
           (isShiftEnabled ? key.capsText! : key.text!) +
-          textSelection!.textAfter(text);
+          cursorPosition!.textAfter(text);
 
-      textSelection = TextSelection(
-          baseOffset: textSelection!.baseOffset + 1, extentOffset: textSelection!.extentOffset + 1);
+      cursorPosition = TextSelection(
+          baseOffset: cursorPosition!.baseOffset + 1,
+          extentOffset: cursorPosition!.extentOffset + 1);
     } else if (key.keyType == VirtualKeyboardKeyType.Action) {
       switch (key.action) {
         case VirtualKeyboardKeyAction.Backspace:
           if (textController.text.length == 0) return;
-          if (textSelection!.start == 0) return;
+          if (cursorPosition!.start == 0) return;
           String text = textController.text;
-          if (textSelection == null) textControllerEvent();
-          textController.text = textSelection!.start == text.length
+          if (cursorPosition == null) textControllerEvent();
+          textController.text = cursorPosition!.start == text.length
               ? text.substring(0, text.length - 1)
-              : text.substring(0, textSelection!.start - 1) + text.substring(textSelection!.start);
-          textSelection = TextSelection(
-              baseOffset: textSelection!.baseOffset - 1,
-              extentOffset: textSelection!.extentOffset - 1);
-          setState(() {});
+              : text.substring(0, cursorPosition!.start - 1) +
+                  text.substring(cursorPosition!.start);
+          cursorPosition = TextSelection(
+              baseOffset: cursorPosition!.baseOffset - 1,
+              extentOffset: cursorPosition!.extentOffset - 1);
           break;
         case VirtualKeyboardKeyAction.Return:
           textController.text += '\n';
@@ -313,7 +316,8 @@ class _VirtualKeyboardState extends State<VirtualKeyboard> {
             onLongPress: () {
               longPress = true;
               // Start sending backspace key events while longPress is true
-              Timer.periodic(Duration(milliseconds: _virtualKeyboardBackspaceEventPerioud),
+              Timer.periodic(
+                  Duration(milliseconds: _virtualKeyboardBackspaceEventPerioud),
                   (timer) {
                 if (longPress) {
                   _onKeyPress(key);
@@ -337,7 +341,8 @@ class _VirtualKeyboardState extends State<VirtualKeyboard> {
             ));
         break;
       case VirtualKeyboardKeyAction.Shift:
-        actionKey = Icon(Icons.arrow_upward, color: isShiftEnabled ? Colors.lime : textColor);
+        actionKey = Icon(Icons.arrow_upward,
+            color: isShiftEnabled ? Colors.lime : textColor);
         break;
       case VirtualKeyboardKeyAction.Space:
         actionKey = Icon(Icons.space_bar, color: textColor);
