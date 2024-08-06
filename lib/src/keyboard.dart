@@ -29,16 +29,23 @@ class VirtualKeyboard extends StatefulWidget {
   /// Set to true if you want only to show Caps letters.
   final bool alwaysCaps;
 
-  VirtualKeyboard(
-      {Key? key,
-      required this.type,
-      required this.textController,
-      this.builder,
-      this.height = _virtualKeyboardDefaultHeight,
-      this.textColor = Colors.black,
-      this.fontSize = 20,
-      this.alwaysCaps = false})
-      : super(key: key);
+  final Color keyBackgroundColor;
+  final Color keyHighlightColor;
+  final BorderRadius keyBorderRadius;
+
+  VirtualKeyboard({
+    Key? key,
+    required this.type,
+    required this.textController,
+    this.builder,
+    this.height = _virtualKeyboardDefaultHeight,
+    this.textColor = Colors.black,
+    this.fontSize = 20,
+    this.alwaysCaps = false,
+    this.keyBackgroundColor = Colors.grey,
+    this.keyHighlightColor = Colors.blue,
+    this.keyBorderRadius = const BorderRadius.all(Radius.circular(10)),
+  }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -225,11 +232,12 @@ class _VirtualKeyboardState extends State<VirtualKeyboard> {
   /// Creates default UI element for keyboard Key.
   Widget _keyboardDefaultKey(VirtualKeyboardKey key) {
     return Material(
-        color: Colors.grey,
-        borderRadius: BorderRadius.all(Radius.circular(10)),
+        color: widget.keyBackgroundColor,
+        clipBehavior: Clip.hardEdge,
+        borderRadius: widget.keyBorderRadius,
         child: InkWell(
-          highlightColor: Colors.blue,
-          borderRadius: BorderRadius.all(Radius.circular(10)),
+          highlightColor: widget.keyHighlightColor,
+          borderRadius: widget.keyBorderRadius,
           onTap: () {
             _onKeyPress(key);
           },
@@ -353,11 +361,12 @@ class _VirtualKeyboardState extends State<VirtualKeyboard> {
         break;
     }
     var finalKey = Material(
-      color: Colors.grey,
-      borderRadius: BorderRadius.all(Radius.circular(10)),
+      color: widget.keyBackgroundColor,
+      clipBehavior: Clip.hardEdge,
+      borderRadius: widget.keyBorderRadius,
       child: InkWell(
-        borderRadius: BorderRadius.all(Radius.circular(10)),
-        highlightColor: Colors.blue,
+        borderRadius: widget.keyBorderRadius,
+        highlightColor: widget.keyHighlightColor,
         onTap: () {
           if (key.action == VirtualKeyboardKeyAction.Shift) {
             if (!alwaysCaps) {
